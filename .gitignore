@@ -3,12 +3,12 @@
 __pycache__/
 *.pyc
 
-# Sekrety – NIGDY do repozytorium
+# Sekrety 
 .env
 
 # macOS
 .DS_Store
 
-# Frontend (na później)
+# Frontend 
 node_modules/
 dist/
