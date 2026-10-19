@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from .config import settings
 from .db import SessionLocal
+from .errors import register_error_handlers
 from .models import Admin
 from .security import hash_password
 
@@ -35,6 +36,8 @@ async def lifespan(app: FastAPI):
 
 # Główny obiekt aplikacji
 app = FastAPI(title="ZAI – Serie pomiarowe", version="1.0.0", lifespan=lifespan)
+
+register_error_handlers(app)
 
 
 @app.get("/api/health", tags=["system"])
