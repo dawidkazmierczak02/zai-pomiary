@@ -7,7 +7,7 @@ from .config import settings
 from .db import SessionLocal
 from .errors import register_error_handlers
 from .models import Admin
-from .routers import auth
+from .routers import auth, series
 from .security import hash_password
 
 
@@ -40,6 +40,7 @@ app = FastAPI(title="ZAI – Serie pomiarowe", version="1.0.0", lifespan=lifespa
 
 register_error_handlers(app)
 app.include_router(auth.router)
+app.include_router(series.router)
 
 
 @app.get("/api/health", tags=["system"])
