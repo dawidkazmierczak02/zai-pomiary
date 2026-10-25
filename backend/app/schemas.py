@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -60,3 +61,30 @@ class SeriesRead(ApiModel):
     color: str
     icon: str | None = None
     unit: str | None = None
+
+
+
+
+# ---------- Czujniki ----------
+
+class SensorInput(ApiModel):
+    """Dane potrzebne do rejestracji czujnika."""
+
+    name: str = Field(min_length=1, max_length=100)
+    series_id: int
+
+
+class SensorRead(ApiModel):
+    """Czujnik zwracany przez API – bez klucza API."""
+
+    id: int
+    name: str
+    series_id: int
+    created_at: datetime
+    last_measurement_at: datetime | None = None
+
+
+class SensorCreated(SensorRead):
+    """Odpowiedź na rejestrację – jedyne miejsce, gdzie pojawia się klucz API."""
+
+    api_key: str
