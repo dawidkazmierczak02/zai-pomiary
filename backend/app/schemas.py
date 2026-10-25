@@ -88,3 +88,24 @@ class SensorCreated(SensorRead):
     """Odpowiedź na rejestrację – jedyne miejsce, gdzie pojawia się klucz API."""
 
     api_key: str
+
+
+
+
+# ---------- Wyniki pomiarów ----------
+
+class MeasurementInput(ApiModel):
+    """Wynik przesyłany przez czujnik. Seria wynika z klucza API, więc jej tu nie ma."""
+
+    value: float = Field(allow_inf_nan=False)
+    timestamp: datetime | None = None  # brak = bieżący czas serwera
+
+
+class MeasurementRead(ApiModel):
+    """Wynik zwracany przez API."""
+
+    id: int
+    series_id: int
+    sensor_id: int | None = None
+    value: float
+    timestamp: datetime
