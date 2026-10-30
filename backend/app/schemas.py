@@ -109,3 +109,20 @@ class MeasurementRead(ApiModel):
     sensor_id: int | None = None
     value: float
     timestamp: datetime
+
+
+
+
+# ---------- Log błędów ----------
+
+class RejectedMeasurementRead(ApiModel):
+    """Wpis w logu błędów: wynik odrzucony przez serwer i powód odrzucenia."""
+
+    id: int
+    series_id: int | None = None
+    sensor_id: int | None = None
+    sensor_name: str | None = None
+    value: float | None = None
+    timestamp: datetime | None = None
+    reason: str
+    created_at: datetime

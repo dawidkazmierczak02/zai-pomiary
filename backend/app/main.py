@@ -7,7 +7,7 @@ from .config import settings
 from .db import SessionLocal
 from .errors import register_error_handlers
 from .models import Admin
-from .routers import auth, measurements, sensors, series
+from .routers import auth, measurements, rejected, sensors, series
 from .security import hash_password
 
 
@@ -43,6 +43,7 @@ app.include_router(auth.router)
 app.include_router(series.router)
 app.include_router(sensors.router)
 app.include_router(measurements.router)
+app.include_router(rejected.router)
 
 
 @app.get("/api/health", tags=["system"])
