@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
+from pydantic_core import PydanticCustomError
 from pydantic.alias_generators import to_camel
 
 
@@ -43,12 +44,14 @@ class SeriesInput(ApiModel):
     icon: str | None = Field(default=None, max_length=50)
     unit: str | None = Field(default=None, max_length=20)
 
-    @model_validator(mode="after")
-    def check_range(self):
+    @field_validator("max_value")
+    @classmethod
+    def check_range(cls, max_value: float, info: ValidationInfo) -> float:
         """Reguła z kontraktu: minValue < maxValue (inaczej 422)."""
-        if self.min_value >= self.max_value:
-            raise ValueError("minValue musi być mniejsze niż maxValue.")
-        return self
+        min_value = info.data.get("min_value")
+        if min_value is not None and max_value <= min_value:
+            raise PydanticCustomError("range_invalid", "maxValue musi być większe niż minValue.")
+        return max_value
 
 
 class SeriesRead(ApiModel):

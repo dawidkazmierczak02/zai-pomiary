@@ -4,12 +4,15 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..dependencies import get_current_token
-from ..errors import ApiError
+from ..errors import ApiError, problem_responses
 from ..models import AuthToken, Measurement, Series
 from ..schemas import SeriesInput, SeriesRead
 
-router = APIRouter(prefix="/api/series", tags=["series"])
-
+router = APIRouter(
+    prefix="/api/series",
+    tags=["series"],
+    responses=problem_responses(400, 401, 404, 409, 422),
+)
 
 def get_series_or_404(db: Session, series_id: int) -> Series:
     """Zwraca serię albo zgłasza 404, jeśli nie istnieje."""

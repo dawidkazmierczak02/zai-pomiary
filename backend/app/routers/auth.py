@@ -7,12 +7,16 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..db import get_db
 from ..dependencies import UNAUTHORIZED_HEADERS, get_current_token
-from ..errors import ApiError
+from ..errors import ApiError, problem_responses
 from ..models import Admin, AuthToken
 from ..schemas import LoginRequest, LoginResponse, PasswordChange
 from ..security import generate_secret, hash_password, sha256, verify_password
 
-router = APIRouter(prefix="/api/auth", tags=["auth"])
+router = APIRouter(
+    prefix="/api/auth",
+    tags=["auth"],
+    responses=problem_responses(400, 401, 403, 422),
+)
 
 
 @router.post("/login", response_model=LoginResponse)

@@ -3,6 +3,7 @@ from http import HTTPStatus
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 PROBLEM_JSON = "application/problem+json"
@@ -10,10 +11,30 @@ PROBLEM_JSON = "application/problem+json"
 # Typy nagłówka Accept, przy których możemy odpowiedzieć JSON
 ACCEPTABLE_MEDIA_TYPES = {"application/json", "application/problem+json", "application/*", "*/*"}
 
-# Błędy walidacji uznawane za składniowe moze to byc zły JSON, brak pola, zły typ 400.
-# Pozostałe to np. za długi napis, zły format koloru to błędy reguł 422.
+# Błędy walidacji uznawane za składniowe moze to byc zły JSON, brak pola, zły typ 400
 SYNTAX_ERROR_TYPES = {"missing", "json_invalid", "extra_forbidden"}
 SYNTAX_ERROR_SUFFIXES = ("_type", "_parsing")
+
+
+class FieldError(BaseModel):
+    field: str
+    message: str
+
+
+class ProblemDetail(BaseModel):
+    """Opis błędu (RFC 9457) – tylko na potrzeby dokumentacji /docs."""
+
+    type: str = "about:blank"
+    title: str
+    status: int
+    detail: str | None = None
+    instance: str | None = None
+    errors: list[FieldError] | None = None
+
+
+def problem_responses(*codes: int) -> dict:
+    """Opisy kodów błędów do dokumentacji OpenAPI (/docs)."""
+    return {code: {"model": ProblemDetail, "description": HTTPStatus(code).phrase} for code in codes}
 
 
 class ApiError(Exception):

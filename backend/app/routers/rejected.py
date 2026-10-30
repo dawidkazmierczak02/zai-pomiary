@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ..errors import problem_responses
 from ..db import get_db
 from ..dependencies import get_current_token
 from ..models import RejectedMeasurement
@@ -12,6 +13,7 @@ router = APIRouter(
     prefix="/api/rejected-measurements",
     tags=["rejected-measurements"],
     dependencies=[Depends(get_current_token)],
+    responses=problem_responses(400, 401),
 )
 
 

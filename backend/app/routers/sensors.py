@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..dependencies import get_current_token
-from ..errors import ApiError
+from ..errors import ApiError, problem_responses
 from ..models import Sensor, Series
 from ..schemas import SensorCreated, SensorInput, SensorRead
 from ..security import generate_secret, sha256
@@ -14,6 +14,7 @@ router = APIRouter(
     prefix="/api/sensors",
     tags=["sensors"],
     dependencies=[Depends(get_current_token)],
+    responses=problem_responses(400, 401, 404, 422),
 )
 
 

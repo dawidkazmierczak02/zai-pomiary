@@ -7,11 +7,15 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..dependencies import get_current_sensor
-from ..errors import ApiError
+from ..errors import ApiError, problem_responses
 from ..models import Measurement, RejectedMeasurement, Sensor, Series
 from ..schemas import MeasurementInput, MeasurementRead
 
-router = APIRouter(prefix="/api/measurements", tags=["measurements"])
+router = APIRouter(
+    prefix="/api/measurements",
+    tags=["measurements"],
+    responses=problem_responses(400, 401, 404, 405, 422),
+)
 
 #znacznik czasu późniejszy niż 5 minut od czasu serwera -> 422
 MAX_FUTURE_OFFSET = timedelta(minutes=5)

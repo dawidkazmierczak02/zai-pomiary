@@ -39,6 +39,16 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="ZAI – Serie pomiarowe", version="1.0.0", lifespan=lifespan)
 
 register_error_handlers(app)
+
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    """Nagłówki bezpieczeństwa dodawane do każdej odpowiedzi."""
+    response = await call_next(request)
+    # Przeglądarka nie może „zgadywać” typu treści – zawsze wierzy Content-Type.
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    return response
+
 app.include_router(auth.router)
 app.include_router(series.router)
 app.include_router(sensors.router)
