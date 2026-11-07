@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 
 from .config import settings
@@ -60,3 +61,9 @@ app.include_router(rejected.router)
 def health():
     """Sprawdzenie dostępności aplikacji (wymagane przez kontrakt)."""
     return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    """Strona główna – do czasu frontendu przekierowuje na dokumentację API."""
+    return RedirectResponse(url="/docs")
