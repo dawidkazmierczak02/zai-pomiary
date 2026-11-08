@@ -1,0 +1,235 @@
+/* ---------- Zmienne kolory i odstępy  ---------- */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --text: #1a2230;
+  --muted: #4a5568;          
+  --border: #cfd6df;
+  --primary: #1d4ed8;        
+  --primary-hover: #1e3a8a;
+  --danger: #b91c1c;
+  --focus: #f59e0b;
+  --radius: 8px;
+  --gap: 1rem;
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2 {
+  line-height: 1.2;
+  margin: 0;
+}
+
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -3rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius);
+  z-index: 10;
+}
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- Nagłówek ---------- */
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.app-header h1 {
+  font-size: 1.5rem;
+}
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+}
+
+/* ---------- Przyciski i pola ---------- */
+.button {
+  min-height: 44px;              
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.button:hover {
+  background: var(--primary-hover);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+.field input {
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  font-weight: 400;
+}
+
+/* ---------- Układ strony ---------- */
+.layout {
+  display: grid;
+  gap: var(--gap);
+  padding: var(--gap);
+  max-width: 1400px;
+  margin: 0 auto;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "filters"
+    "chart"
+    "table";
+}
+.filters-area { grid-area: filters; }
+.chart-area   { grid-area: chart; }
+.table-area   { grid-area: table; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  min-width: 0;                  
+}
+.panel h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ---------- Filtry ---------- */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+.filters fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.filters legend {
+  font-weight: 700;
+  padding: 0 0.25rem;
+}
+.series-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+.checkbox input {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ---------- Tablet  ---------- */
+@media (min-width: 768px) {
+  .filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .filters fieldset {
+    flex: 1 1 260px;
+  }
+  .chart-area .placeholder {
+    min-height: 320px;
+  }
+}
+
+/* ---------- Komputer  ---------- */
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 300px 1fr;
+    grid-template-areas:
+      "filters chart"
+      "filters table";
+    align-items: start;
+  }
+  .filters {
+    flex-direction: column;
+  }
+  .filters fieldset {
+    flex: none;
+  }
+  .filters-area {
+    position: sticky;            
+    top: var(--gap);
+  }
+  .app-header {
+    padding: 1rem 2rem;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
