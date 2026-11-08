@@ -1,18 +1,19 @@
-import { useEffect, useMemo, useState } from 'react'
-import { api } from './api'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { api, getSession, setSession } from './api'
 import Filters from './components/Filters'
 import Header from './components/Header'
+import LoginDialog from './components/LoginDialog'
 import MeasurementsChart from './components/MeasurementsChart'
 import MeasurementsTable from './components/MeasurementsTable'
+import PasswordDialog from './components/PasswordDialog'
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
-// Data format pola 
+
 function toLocalInput(date) {
   const offsetMs = date.getTimezoneOffset() * 60 * 1000
   return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16)
 }
-
 
 function toIso(localValue) {
   const date = new Date(localValue)
@@ -20,6 +21,48 @@ function toIso(localValue) {
 }
 
 export default function App() {
+  // ---------- Sesja administratora ----------
+  const [currentSession, setCurrentSession] = useState(getSession)
+  const [openDialog, setOpenDialog] = useState(null) 
+  const [notice, setNotice] = useState('')
+
+  const updateSession = useCallback((newSession) => {
+    setSession(newSession)
+    setCurrentSession(newSession)
+  }, [])
+
+  // api.js zgłasza zdarzenie gdy serwer odrzuci token np. wygasł po godzinie
+  useEffect(() => {
+    function handleExpired() {
+      setCurrentSession(null)
+      setNotice('Sesja wygasła. Zaloguj się ponownie.')
+    }
+    window.addEventListener('auth-expired', handleExpired)
+    return () => window.removeEventListener('auth-expired', handleExpired)
+  }, [])
+
+  function handleLoggedIn(newSession) {
+    updateSession(newSession)
+    setOpenDialog(null)
+    setNotice(`Zalogowano jako ${newSession.username}.`)
+  }
+
+  async function handleLogout() {
+    try {
+      await api('/api/auth/logout', { method: 'POST', auth: true })
+    } catch {
+      // Nawet jeśli serwer nie odpowie wylogowanie lokalne
+    }
+    updateSession(null)
+    setNotice('Wylogowano.')
+  }
+
+  function handlePasswordChanged() {
+    setOpenDialog(null)
+    setNotice('Hasło zostało zmienione.')
+  }
+
+  // ---------- Serie i filtry ----------
   const [series, setSeries] = useState([])
   const [seriesLoading, setSeriesLoading] = useState(true)
   const [seriesError, setSeriesError] = useState(null)
@@ -35,7 +78,7 @@ export default function App() {
   const [measurementsError, setMeasurementsError] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
 
-  // Serie  raz, po pierwszym wyświetleniu domyślnie wszystkie są widoczne
+
   useEffect(() => {
     api('/api/series')
       .then((data) => {
@@ -46,10 +89,9 @@ export default function App() {
       .finally(() => setSeriesLoading(false))
   }, [])
 
-  // Identyfikatory zaznaczonych serii w stałej kolejności
   const seriesParam = [...selectedIds].sort((a, b) => a - b).join(',')
 
-  // Wyniki pobierane od nowa przy każdej zmianie filtrów (F5)
+  // Wyniki – pobierane od nowa przy każdej zmianie filtrów (F5)
   useEffect(() => {
     if (!seriesParam) return
     const params = new URLSearchParams({ series: seriesParam, limit: '10000' })
@@ -87,7 +129,23 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main">Przejdź do treści</a>
-      <Header />
+      <Header
+        username={currentSession?.username}
+        onLoginClick={() => setOpenDialog('login')}
+        onPasswordClick={() => setOpenDialog('password')}
+        onLogout={handleLogout}
+      />
+
+      <div className="notice-area" role="status" aria-live="polite">
+        {notice && (
+          <p className="notice">
+            {notice}
+            <button type="button" className="icon-button" onClick={() => setNotice('')} aria-label="Zamknij komunikat">
+              ×
+            </button>
+          </p>
+        )}
+      </div>
 
       <main id="main" className="layout">
         <aside className="panel filters-area" aria-labelledby="filters-title">
@@ -135,6 +193,17 @@ export default function App() {
           )}
         </section>
       </main>
+
+      <LoginDialog
+        open={openDialog === 'login'}
+        onClose={() => setOpenDialog(null)}
+        onLoggedIn={handleLoggedIn}
+      />
+      <PasswordDialog
+        open={openDialog === 'password'}
+        onClose={() => setOpenDialog(null)}
+        onChanged={handlePasswordChanged}
+      />
     </>
   )
 }
