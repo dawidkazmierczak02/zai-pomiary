@@ -8,6 +8,12 @@ export default function LoginDialog({ open, onClose, onLoggedIn }) {
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
+  // Zamknięcie okna czyści hasło i komunikat 
+  function close() {
+    setPassword('')
+    setError(null)
+    onClose()
+  }
   async function handleSubmit(event) {
     event.preventDefault()
     setBusy(true)
@@ -24,7 +30,7 @@ export default function LoginDialog({ open, onClose, onLoggedIn }) {
   }
 
   return (
-    <Modal title="Logowanie administratora" open={open} onClose={onClose}>
+    <Modal title="Logowanie administratora" open={open} onClose={close}>
       <form className="form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Login</span>
@@ -32,7 +38,10 @@ export default function LoginDialog({ open, onClose, onLoggedIn }) {
             autoComplete="username"
             required
             value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(event) => {
+              setUsername(event.target.value)
+              setError(null)
+            }}
           />
         </label>
         <label className="field">
@@ -42,12 +51,15 @@ export default function LoginDialog({ open, onClose, onLoggedIn }) {
             autoComplete="current-password"
             required
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) => {
+              setPassword(event.target.value)
+              setError(null)
+            }}
           />
         </label>
         {error && <p role="alert" className="error">{error}</p>}
         <div className="form-actions">
-          <button type="button" className="button secondary" onClick={onClose}>Anuluj</button>
+          <button type="button" className="button secondary" onClick={close}>Anuluj</button>
           <button type="submit" className="button" disabled={busy}>
             {busy ? 'Logowanie…' : 'Zaloguj'}
           </button>

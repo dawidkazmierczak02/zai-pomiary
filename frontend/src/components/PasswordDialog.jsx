@@ -22,6 +22,13 @@ export default function PasswordDialog({ open, onClose, onChanged }) {
     reset()
     onClose()
   }
+  
+  function edit(setter) {
+    return (event) => {
+      setter(event.target.value)
+      setError(null)
+    }
+  }
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -62,7 +69,7 @@ export default function PasswordDialog({ open, onClose, onChanged }) {
             autoComplete="current-password"
             required
             value={currentPassword}
-            onChange={(event) => setCurrentPassword(event.target.value)}
+            onChange={edit(setCurrentPassword)}
           />
         </label>
         <label className="field">
@@ -73,7 +80,7 @@ export default function PasswordDialog({ open, onClose, onChanged }) {
             required
             minLength={MIN_LENGTH}
             value={newPassword}
-            onChange={(event) => setNewPassword(event.target.value)}
+            onChange={edit(setNewPassword)}
           />
         </label>
         <label className="field">
@@ -83,7 +90,7 @@ export default function PasswordDialog({ open, onClose, onChanged }) {
             autoComplete="new-password"
             required
             value={repeatPassword}
-            onChange={(event) => setRepeatPassword(event.target.value)}
+            onChange={edit(setRepeatPassword)}
           />
         </label>
         {error && <p role="alert" className="error">{error}</p>}

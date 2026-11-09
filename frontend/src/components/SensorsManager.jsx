@@ -96,7 +96,10 @@ export default function SensorsManager({ series, onNotice }) {
             placeholder="np. Czujnik temperatury T2"
             aria-invalid={formErrors.name ? 'true' : undefined}
             aria-describedby={formErrors.name ? `${id}-name-error` : undefined}
-            onChange={(event) => setName(event.target.value)}
+                        onChange={(event) => {
+              setName(event.target.value)
+              setFormErrors({})
+            }}
           />
           {formErrors.name && <span id={`${id}-name-error`} className="field-error">{formErrors.name}</span>}
         </div>
@@ -107,7 +110,10 @@ export default function SensorsManager({ series, onNotice }) {
             value={seriesId}
             aria-invalid={formErrors.seriesId ? 'true' : undefined}
             aria-describedby={formErrors.seriesId ? `${id}-series-error` : undefined}
-            onChange={(event) => setSeriesId(event.target.value)}
+                        onChange={(event) => {
+              setSeriesId(event.target.value)
+              setFormErrors({})
+            }}
           >
             <option value="">– wybierz –</option>
             {series.map((s) => (

@@ -63,6 +63,13 @@ export default function App() {
     setNotice('Hasło zostało zmienione.')
   }
 
+  // Komunikat o powodzeniu znika sam po 6 sekundach 
+  useEffect(() => {
+    if (!notice) return
+    const timer = setTimeout(() => setNotice(''), 6000)
+    return () => clearTimeout(timer)
+  }, [notice])
+
   // ---------- Serie i filtry ----------
   const [series, setSeries] = useState([])
   const [seriesLoading, setSeriesLoading] = useState(true)
@@ -110,6 +117,13 @@ export default function App() {
     const to = toIso(range.to)
     if (from) params.set('from', from)
     if (to) params.set('to', to)
+
+    if (from && to && from > to) {
+      setMeasurements([])
+      setMeasurementsLoading(false)
+      setMeasurementsError('Data „Od” musi być wcześniejsza niż data „Do”.')
+      return
+    }
 
     let cancelled = false // odpowiedź na stary filtr nie nadpisze nowszej
     setMeasurementsLoading(true)

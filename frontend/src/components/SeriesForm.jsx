@@ -44,8 +44,10 @@ export default function SeriesForm({ series, onClose, onSaved }) {
   const [formError, setFormError] = useState(null)
   const [busy, setBusy] = useState(false)
 
-  function change(field, value) {
+    function change(field, value) {
     setValues((current) => ({ ...current, [field]: value }))
+    setErrors((current) => ({ ...current, [field]: undefined }))
+    setFormError(null)
   }
 
   // Właściwości wspólne dla każdego pola powiązanie z komunikatem błędu

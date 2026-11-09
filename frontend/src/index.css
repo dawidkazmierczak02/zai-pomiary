@@ -539,3 +539,15 @@ h2 {
   font-family: ui-monospace, Menlo, monospace;
   word-break: break-all;         
 }
+
+/* ---------- Listy rozwijane – ten sam wygląd we wszystkich przeglądarkach ---------- */
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234a5568' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  cursor: pointer;
+}
