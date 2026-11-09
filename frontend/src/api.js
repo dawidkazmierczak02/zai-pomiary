@@ -56,3 +56,10 @@ export async function api(path, { method = 'GET', body, auth = false } = {}) {
   if (!response.ok) throw new ApiError(response.status, data)
   return data
 }
+
+/** Błędy walidacji z odpowiedzi API */
+export function fieldErrors(error) {
+  const result = {}
+  for (const item of error?.problem?.errors ?? []) result[item.field] = item.message
+  return result
+}

@@ -399,3 +399,143 @@ h2 {
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+
+/* ---------- Panel administratora ---------- */
+.admin-area {
+  grid-column: 1 / -1;           
+}
+.tab-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: var(--gap);
+  border-bottom: 1px solid var(--border);
+}
+.tab-button {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tab-button:hover {
+  color: var(--text);
+}
+.tab-button.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);   
+}
+.admin-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+.admin-section h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+/* Tabele w panelu – bez podświetlania wierszy jak w tabeli wyników */
+.data-table.plain tbody tr {
+  cursor: default;
+}
+.data-table.plain tbody tr:hover {
+  background: transparent;
+}
+.data-table td.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.data-table td.reason {
+  white-space: normal;           
+  min-width: 260px;
+}
+
+/* ---------- Przyciski dodatkowe ---------- */
+.button.small {
+  padding: 0.35rem 0.75rem;
+}
+.button.danger {
+  background: var(--surface);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.button.danger:hover {
+  background: #fef2f2;
+}
+
+/* ---------- Pola formularzy ---------- */
+.field select {
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  font-weight: 400;
+}
+.field input[type="color"] {
+  width: 4.5rem;
+  padding: 0.25rem;
+}
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border: 2px solid var(--danger);
+}
+.field-error {
+  color: var(--danger);
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.inline-form .field {
+  flex: 1 1 220px;
+}
+.inline-form > .button {
+  margin-top: 1.75rem;          
+}
+.filter-field {
+  max-width: 320px;
+}
+
+/* ---------- Klucz API pokazywany raz ---------- */
+.key-box {
+  padding: var(--gap);
+  border: 2px solid var(--focus);
+  border-radius: var(--radius);
+  background: #fffbeb;
+}
+.key-box p {
+  margin: 0 0 0.75rem;
+}
+.api-key {
+  display: block;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: ui-monospace, Menlo, monospace;
+  word-break: break-all;         
+}

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { api, getSession, setSession } from './api'
+import AdminPanel from './components/AdminPanel'
 import Filters from './components/Filters'
 import Header from './components/Header'
 import LoginDialog from './components/LoginDialog'
@@ -79,15 +80,25 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null)
 
 
+// Serie na starcie i po każdej zmianie w panelu administratora
+// Nowe serie są od razu zaznaczone a usunięte znikają z zaznaczenia
+  const knownSeriesIds = useRef(new Set())
+  const loadSeries = useCallback(async () => {
+    const data = await api('/api/series')
+    const known = knownSeriesIds.current
+    knownSeriesIds.current = new Set(data.map((s) => s.id))
+    setSeries(data)
+    setSelectedIds((selected) => [
+      ...selected.filter((id) => knownSeriesIds.current.has(id)),
+      ...data.filter((s) => !known.has(s.id)).map((s) => s.id),
+    ])
+  }, [])
+
   useEffect(() => {
-    api('/api/series')
-      .then((data) => {
-        setSeries(data)
-        setSelectedIds(data.map((s) => s.id))
-      })
+    loadSeries()
       .catch((err) => setSeriesError(err.message))
       .finally(() => setSeriesLoading(false))
-  }, [])
+  }, [loadSeries])
 
   const seriesParam = [...selectedIds].sort((a, b) => a - b).join(',')
 
@@ -192,6 +203,12 @@ export default function App() {
             />
           )}
         </section>
+        {currentSession && (
+          <section className="panel admin-area" aria-labelledby="admin-title">
+            <h2 id="admin-title">Panel administratora</h2>
+            <AdminPanel series={series} onSeriesChanged={loadSeries} onNotice={setNotice} />
+          </section>
+        )}
       </main>
 
       <LoginDialog
