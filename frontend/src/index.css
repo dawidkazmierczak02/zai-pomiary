@@ -551,3 +551,95 @@ h2 {
   background-size: 12px;
   cursor: pointer;
 }
+
+
+/* ---------- Wydruk (F7) ---------- */
+.print-only {
+  display: none;
+}
+
+@media print {
+  body,
+  :root {
+    background: #fff;
+    color: #000;
+  }
+
+  
+  .skip-link,
+  .app-header nav,
+  .notice-area,
+  .filters-area,
+  .admin-area,
+  button,
+  a,
+  form,
+  input,
+  select,
+  dialog {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+  .print-summary {
+    margin: 0 0 1rem;
+    font-weight: 600;
+  }
+
+  .app-header {
+    padding: 0 0 0.5rem;
+    border: none;
+  }
+  .subtitle {
+    color: #000;
+  }
+
+  
+  .layout {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+  .panel {
+    border: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  .chart-area {
+    break-inside: avoid;         /* wykres nie rozdziela się między strony */
+  }
+  .chart-box {
+    height: 300px;
+  }
+  .chart-box canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Tabela: wszystkie wiersze, bez przewijania */
+  .table-wrapper {
+    max-height: none;
+    overflow: visible;
+    border: none;
+  }
+  .data-table thead th {
+    position: static;
+  }
+  .data-table thead {
+    display: table-header-group; 
+  }
+  .data-table tr {
+    break-inside: avoid;
+  }
+  .data-table th,
+  .data-table td {
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid #999;
+  }
+  .data-table tbody tr.selected {
+    background: none;
+    box-shadow: none;
+  }
+}

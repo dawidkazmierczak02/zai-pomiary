@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { api, getSession, setSession } from './api'
+import { formatDateTime } from './format'
 import AdminPanel from './components/AdminPanel'
 import Filters from './components/Filters'
 import Header from './components/Header'
@@ -24,7 +25,7 @@ function toIso(localValue) {
 export default function App() {
   // ---------- Sesja administratora ----------
   const [currentSession, setCurrentSession] = useState(getSession)
-  const [openDialog, setOpenDialog] = useState(null) 
+  const [openDialog, setOpenDialog] = useState(null)
   const [notice, setNotice] = useState('')
 
   const updateSession = useCallback((newSession) => {
@@ -87,8 +88,8 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null)
 
 
-// Serie na starcie i po każdej zmianie w panelu administratora
-// Nowe serie są od razu zaznaczone a usunięte znikają z zaznaczenia
+  // Serie na starcie i po każdej zmianie w panelu administratora
+  // Nowe serie są od razu zaznaczone a usunięte znikają z zaznaczenia
   const knownSeriesIds = useRef(new Set())
   const loadSeries = useCallback(async () => {
     const data = await api('/api/series')
@@ -150,6 +151,13 @@ export default function App() {
 
   let emptyMessage = 'Brak wyników w wybranym zakresie czasu.'
   if (selectedIds.length === 0) emptyMessage = 'Zaznacz co najmniej jedną serię.'
+  // Linijka widoczna tylko na wydruku: jaki zakres i które serie są na kartce (F7).
+  const formatInput = (value) => {
+    const iso = toIso(value)
+    return iso ? formatDateTime(iso) : '–'
+  }
+  const printSummary = `Zakres czasu: ${formatInput(range.from)} – ${formatInput(range.to)}. Serie: ${visibleSeries.map((s) => s.name).join(', ') || 'brak'
+    }.`
 
   return (
     <>
@@ -173,6 +181,7 @@ export default function App() {
       </div>
 
       <main id="main" className="layout">
+        <p className="print-only print-summary">{printSummary}</p>
         <aside className="panel filters-area" aria-labelledby="filters-title">
           <h2 id="filters-title">Filtry</h2>
           {seriesLoading && <p>Wczytywanie serii…</p>}
@@ -204,7 +213,12 @@ export default function App() {
         </section>
 
         <section className="panel table-area" aria-labelledby="table-title">
-          <h2 id="table-title">Wyniki pomiarów</h2>
+          <div className="section-header">
+            <h2 id="table-title">Wyniki pomiarów</h2>
+            <button type="button" className="button secondary" onClick={() => window.print()}>
+              Drukuj
+            </button>
+          </div>
           <p className="status muted" aria-live="polite">
             {measurementsLoading ? 'Wczytywanie wyników…' : `Liczba wyników: ${visibleMeasurements.length}`}
           </p>
